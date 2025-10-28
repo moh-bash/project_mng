@@ -1,0 +1,9 @@
+{
+  "access_token": "mock-jwt-token-12345-USER-LOGGED-IN",
+  "user": {
+    "id": 101,
+    "email": "mock.user@projy.com",
+    "name": "Mock User (John Doe)",
+    "role": "MEMBER"
+  }
+}

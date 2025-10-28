@@ -1,0 +1,42 @@
+[
+  {
+    "id": 101,
+    "senderId": 1,
+    "receiverId": 2,
+    "projectId": 50,
+    "status": "PENDING",
+    "sender": { "id": 1, "name": "أحمد علي", "email": "ahmad@example.com" },
+    "project": { "id": 50, "name": "تطبيق الميزانية", "description": "تطبيق مالي شخصي" },
+    "createdAt": "2025-10-20T10:00:00Z"
+  },
+  {
+    "id": 102,
+    "senderId": 3,
+    "receiverId": 2,
+    "projectId": 51,
+    "status": "PENDING",
+    "sender": { "id": 3, "name": "فاطمة محمد", "email": "fatima@example.com" },
+    "project": { "id": 51, "name": "منصة التعليم الإلكتروني", "description": "منصة لرفع الكورسات" },
+    "createdAt": "2025-10-22T12:30:00Z"
+  },
+  {
+    "id": 103,
+    "senderId": 4,
+    "receiverId": 2,
+    "projectId": 52,
+    "status": "PENDING",
+    "sender": { "id": 4, "name": "علي حسين", "email": "ali@example.com" },
+    "project": { "id": 52, "name": "موقع الشركة", "description": "صفحات الهبوط الرسمية" },
+    "createdAt": "2025-10-25T08:00:00Z"
+  },
+  {
+    "id": 104,
+    "senderId": 5,
+    "receiverId": 2,
+    "projectId": 53,
+    "status": "APPROVED",
+    "sender": { "id": 5, "name": "مريم خالد", "email": "maryam@example.com" },
+    "project": { "id": 53, "name": "نظام إدارة المهام", "description": "نظام داخلي" },
+    "createdAt": "2025-10-18T09:00:00Z"
+  }
+]
