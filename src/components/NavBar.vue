@@ -1,22 +1,22 @@
 <template>
     <v-app-bar 
+        density="comfortable"
         class="bg-primary px-6" 
         height="64" 
         elevation="4"
     >
-        <div v-if="user" class="d-flex align-center">
-        
+        <div v-if="Layoutppp && user" class="d-flex align-center">
+
             <v-menu
                 offset-y
                 location="bottom right"
             >
                 <template v-slot:activator="{ props }">
                     <div v-bind="props" class="d-flex align-center cursor-pointer"> 
-                        <v-avatar color="blue-lighten-2" size="36">
-                            <span class="text-h6 text-white">{{ user.name ? user.name[0] : '' }}</span>
+                        <v-avatar color="secondary" size="36">
+                            <span class="text-h6 text-background">{{ user.name ? user.name[0] : '' }}</span>
                         </v-avatar>
                         
-                        <v-icon color="white" size="small" class="ms-1">mdi-chevron-down</v-icon>
                     </div>
                 </template>
 
@@ -37,11 +37,9 @@
                     <v-list density="compact">
                         <v-list-item 
                             link 
-                            @click="$router.push({ name: 'UserProfile' })"
+                            @click="$router.go({ name: 'UserProfile' })"
                         >
-                            <v-list-item-icon>
-                                <v-icon>mdi-account-circle</v-icon>
-                            </v-list-item-icon>
+                            <v-icon>mdi-account-circle</v-icon>
                             <v-list-item-title><pre>Profile</pre> </v-list-item-title>
                         </v-list-item> 
                     </v-list>
@@ -62,7 +60,10 @@
                 </v-card>
             </v-menu>
         </div>
-        <v-btn @click="$router.push({ name: 'login' })" v-else>Login</v-btn>
+        <v-btn 
+            class="bg-secondary text-primary"
+            rounded="xl" 
+            @click="$router.push({ name: 'login' })" v-else>Login</v-btn>
 
         <h1 class="text-h5 font-weight-bold text-white mx-2">project manager</h1>
 
@@ -78,15 +79,18 @@
                 <v-icon color="white">{{ isDark ? 'mdi-white-balance-sunny' : 'mdi-moon-waning-crescent' }}</v-icon>
             </v-btn>
 
-            <v-btn v-if="user" icon @click="invitationsDrawer = true">
+            <v-btn v-if="Layoutppp" icon @click="invitationsDrawer = true">
                 <v-badge 
-                    :content="invitationCount" 
+                    v-if="pendingCount > 0"
+                    :content="pendingCount" 
                     color="red" 
-                    :value="invitationCount > 0"
                     overlap
                 >
                     <v-icon color="white">mdi-bell-outline</v-icon>
                 </v-badge>
+                <v-icon 
+                color="white"
+                v-else >mdi-bell-outline</v-icon>
             </v-btn>
         </div>
     </v-app-bar>
@@ -99,14 +103,14 @@
         <v-list-item class="bg-primary text-white">
             <v-list-item-title class="text-h6">
                 <v-icon start>mdi-bell-outline</v-icon>
-                الدعوات الواردة ({{ invitationCount }})
+                invitations ({{ pendingCount }})
             </v-list-item-title>
         </v-list-item>
         <v-divider></v-divider>
         
-        <v-list v-if="invitations.length" class="pa-4">
-            <InvitationCard 
-                v-for="invite in invitations"
+        <v-list v-if="pendingInvitations.length" class="pa-4">
+            <InvitationCard
+                v-for="invite in pendingInvitations"
                 :key="invite.id"
                 :invitation="invite" 
             />
@@ -121,7 +125,8 @@ import { useTheme } from 'vuetify';
 import { useAuthStore } from '@/stores/auth';
 import { useInvitationsStore } from '@/stores/invitations';
 import { mapState, mapActions } from 'pinia';
-import CardInvitation from '@/components/CardInvitation.vue';
+import CardInvitation from '@/components/invitation/CardInvitation.vue';
+
 
 export default {
     components: {
@@ -130,34 +135,34 @@ export default {
     data() {
         return {
             invitationsDrawer: false, 
-            // 💡 لتخزين كائن الثيم للوصول إليه بشكل صحيح في Options API
-        theme: useTheme(),
+            theme: useTheme(),
         };
     },
 
     computed: {
-        // ربط حالة المستخدم من متجر Auth
         ...mapState(useAuthStore, ['user']), 
         
-        // ربط Getter و State من متجر Invitations
-        ...mapState(useInvitationsStore, {
-             invitationCount: 'newInvitationsCount',
-             invitations: 'invitations' 
-        }),
+        ...mapState(useInvitationsStore, [
+            'invitations',
+            'invitationsError', 
+            'invitationsLoading', 
+            'pendingInvitations',
+            'pendingCount'
+        ]),
         
-        // حساب حالة الثيم (Dark/Light)
         isDark() {
             return this.vuetifyTheme ? this.vuetifyTheme.global.name.value === 'dark' : false;
+        },
+
+        Layoutppp(){
+           return this.$route.meta.layout;
         }
     },
 
     methods: {
-        // ربط Action تسجيل الخروج من متجر Auth
-        ...mapActions(useAuthStore, ['logout']), 
-        // ربط Action لقبول دعوة من متجر Invitations
-        ...mapActions(useInvitationsStore, ['acceptInvitation']),
+        ...mapActions(useAuthStore, ['logout' , 'profile']), 
+        ...mapActions(useInvitationsStore, ['fetchInvitations']),
 
-        // 💡 دالة تبديل الثيم (معالجة مشكلة السياق وحفظ LocalStorage)
         toggleTheme() {
            const theme = this.vuetifyTheme; 
            if (!theme) return;
@@ -170,23 +175,20 @@ export default {
 
         handleLogout() {
             this.logout(); 
-            // التوجيه إلى صفحة تسجيل الدخول
-            this.$router.push({ name: 'Login' }); 
+            this.$router.push({ name: 'login' }); 
         },
 
         toggleLanguage() {
             alert('Toggle Language (Mock)');
         }
     },
-
+    
     created() {
-        // 💡 1. تهيئة Vuetify Theme مرة واحدة في السياق الصحيح
-        this.vuetifyTheme = useTheme(); 
-
-        // 2. جلب الدعوات عند إنشاء المكون (افتراضياً)
-        const invitationsStore = useInvitationsStore();
-        invitationsStore.fetchInvitations();
-    }
+        this.profile();
+        this.vuetifyTheme = useTheme();    
+        this.fetchInvitations();
+        
+    },
 };
 </script>
 <style scoped>

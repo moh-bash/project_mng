@@ -5,10 +5,19 @@
              {{ authError }}
         </v-alert>    
         <v-form @submit.prevent="handleLogin">
-            <v-text-field label="Email" type="email" v-model="email"/>
-            <v-text-field label="Password" type="password" v-model="password"/>
+            <v-text-field 
+                label="Email" 
+                type="email" 
+                v-model="email"
+                :rules="[ v => !!v || 'required']" />
+            <v-text-field 
+                label="Password" 
+                type="password" 
+                v-model="password"
+                :rules="[ v => !!v || 'required']" />
             <v-btn 
-            type="submit"
+                type="submit"
+                color="primary"
                 :loading="authLoading"
                 :disabled="authLoading"
                 size="x-large" 
@@ -16,6 +25,7 @@
                 rounded="xl">Login</v-btn>
             <v-btn rounded="xl" 
                 size="x-large" 
+                color="secondary"
                 block
                 :to="'/register'"
                 class="mt-4"
@@ -27,33 +37,35 @@
 <script>
 import { useAuthStore } from '@/stores/auth';
 import { mapState , mapActions } from 'pinia';
-import router from '@/router';
 
 export default {
   name: 'LoginPage',
   data() {
     return {
       email: '',
-      password: ''
+      password: '',
     };
   },
 
   computed:{
-    ...mapState(useAuthStore,['authError','authLoading'])
+    ...mapState(useAuthStore,['authError','authLoading','token'])
   },
 
   methods:{
-    ...mapActions(useAuthStore,['login']),
+    ...mapActions(useAuthStore,['login' ]),
     async handleLogin(){
         try { 
-            await this.login({
-                email: this.email, 
-                password: this.password
-            });
+            await this.login(this.email, this.password);
+            if (this.token) {
+            this.$router.push('/pages/projects');
+        }
         } catch (error) { 
             console.error('Login failed:', error);
         }
-    }
-}
+    },
+    
+},
+
+
 };
 </script>

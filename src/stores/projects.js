@@ -1,104 +1,137 @@
 import { defineStore } from "pinia";
-
-import ProjectList from '@/mock/projectList.json'; 
-import mockProjectCreate from '@/mock/projectCreateSuccess.json'; 
-import mockProjectUpdate from '@/mock/projectUpdateSuccess.json'; 
-import mockProjectDelete from '@/mock/projectDeleteSuccess.json';
-
+import { apiurl, getHeader } from "./api";
 
 export const useProjectsStore = defineStore('projects', {
     state: () => ({
-        projects: [] || null ,
+        projects: [] , 
         projectsLoading: false,
         projectsError: null,
-        currentProject: null,
+        currentProject: null, 
     }),
 
-    getters:{
-        overdueProjects: (state) => {
-            const today = new Date();
-            today.setHours(0, 0, 0, 0); 
-            return state.projects.filter(project => {
-                const dueDate = new Date(project.dueDate);
-                dueDate.setHours(0, 0, 0, 0);
-                return dueDate < today && project.status !== 'completed';
-            });
-        },
-    },
-
+    // Retrieves all projects
     actions: {
-        async delay() {
-            return new Promise(resolve => setTimeout(resolve, 800));
-        },
-
         async fetchProjects() {
             this.projectsLoading = true;
-            this.projectsError = null; 
-            
-            try {
-                await this.delay();
-                this.projects = ProjectList;
-                this.currentProject = this.projects[0] || null;
-
-            } catch (error) {
-                this.projectsError = 'error fetching projects (Mock Error)'; 
-            } finally {
-                this.projectsLoading = false;
-            }   (محاكاة)
-        },
-
-        async createProject(projectData) {
-            this.projectsLoading = true;
             this.projectsError = null;
-            await this.delay();
             try {
-                const newProject = mockProjectCreate; 
-                this.projects.unshift(newProject);
-            } catch (error) {
-                this.projectsError = 'error creating project (Mock Error)';
-            } finally {
-                this.projectsLoading = false;
-            }
-        },
+                const res = await fetch( `${apiurl}/projects`, {
+                    method: "GET",
+                    headers: { ...getHeader() }
+                });
 
-
-        async updateProject(projectId, updateData) {
-            this.projectsLoading = true;
-            this.projectsError = null;
-            await this.delay();
-            try {
-                const updatedProject = mockProjectUpdate; 
-                const index = this.projects.findIndex(p => p.id === projectId);
-                if (index !== -1) {
-                    this.projects[index] = updatedProject;
+                let data = await res.json();
+                if (!res.ok) {
+                    throw new Error(data.message || 'Failed to fetch projects');
                 }
+                this.projects = data;
             } catch (error) {
-                this.projectsError = 'error updating project (Mock Error)';
+                this.projectsError = error.message;
+                this.projects = [];
             } finally {
                 this.projectsLoading = false;
             }
+
         },
 
-
-        async deleteProject(projectId) {
-            this.projectsError = null;
+        // Creates a new project
+        async createProject(project) {
             this.projectsLoading = true;
-            await this.delay();
+            this.projectsError = null;
             try {
-                // نستخدم filter لإزالة المشروع بشكل نظيف
-                this.projects = this.projects.filter(p => p.id !== projectId);
+                const res = await fetch( `${apiurl}/projects`, {
+                    method: "POST",
+                    headers: { ...getHeader(), 'Content-Type': 'application/json' },
+                    body: JSON.stringify(project)
+                });
+
+                let data = await res.json();
+
+
+                if (!res.ok) {
+                    throw new Error(data.message||'Failed to create project');
+                }
+                this.projects.push(data);
+                return data;
+
             } catch (error) {
-                this.projectsError = 'error deleting project (Mock Error)';
+                this.projectsError = error.message;
+                return error
             } finally {
                 this.projectsLoading = false;
             }
         },
-    },
+
+        // Updates a project
+        async updateProject(projectId, updatedProject) {
+            this.projectsLoading = true;
+            this.projectsError = null;
+            try {
+                const res = await fetch( `${apiurl}/projects/${projectId}`, {
+                    method: "PATCH",
+                    headers: { ...getHeader(), 'Content-Type': 'application/json' },
+                    body: JSON.stringify(updatedProject)
+                });
+                let data = await res.json();
+                if (!res.ok) {
+                    throw new Error(data.message || 'Failed to update project');
+                }
+               
+                return data;
+            } catch (error) {
+                this.projectsError = error.message;
+                return error;
+            } finally {
+                this.projectsLoading = false;
+            }
+        },
+
+        // Deletes a project
+        async deleteProject(projectId){
+            this.projectsLoading= true;
+            this.projectsError= null;
+            try{
+                const res = await fetch( `${apiurl}/projects/${projectId}`, {
+                    method: "DELETE",
+                    headers: { ...getHeader(), 'Content-Type': 'application/json' },
+
+                });
+
+                if(!res.ok){
+                    let data =await res.json().catch(() => ({}));
+                    throw new Error(data.message);
+                }
+                this.projects = this.projects.filter(p => p.id !== projectId);
+            }catch (error) {
+                this.projectsError = error.message;
+                throw error;
+                
+            } finally {
+                this.projectsLoading = false;
+            }
+        },
+
+        // Retrieves a specific project with all its details
+        async fetchProjectById(projectId) {
+            this.projectsLoading = true;
+            this.projectsError = null;
+            try {
+                const res = await fetch( `${apiurl}/projects/${projectId}`, {
+                    method: "GET",
+                    headers: { ...getHeader() }
+                });
+                let data = await res.json();
+                if (!res.ok) {
+                    throw new Error(data.message || 'Failed to fetch project');
+                }
+                this.currentProject = data;
+                return data;
+            } catch (error) {
+                this.projectsError = error.message;
+                throw error;
+            } finally {
+                this.projectsLoading = false;
+            }
+        }
+    }
 });
- 
-
-    
-
-  
-
-       

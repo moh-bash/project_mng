@@ -11,14 +11,16 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
-    AppFooter: typeof import('./src/components/AppFooter.vue')['default']
-    CardInvitation: typeof import('./src/components/CardInvitation.vue')['default']
-    CardProject: typeof import('./src/components/CardProject.vue')['default']
-    CCardProject: typeof import('./src/components/CardProject.vue')['default']
-    FormCreateProject: typeof import('./src/components/FormCreateProject.vue')['default']
-    HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
+    ActionMenu: typeof import('./src/components/project/ActionMenu.vue')['default']
+    CardInvitation: typeof import('./src/components/invitation/CardInvitation.vue')['default']
+    CardProject: typeof import('./src/components/project/CardProject.vue')['default']
+    DashBoard: typeof import('./src/components/details/dashBoard.vue')['default']
+    DetAils: typeof import('./src/components/details/detAils.vue')['default']
+    FormCreateProject: typeof import('./src/components/project/FormCreateProject.vue')['default']
+    KanBan: typeof import('./src/components/details/kanBan.vue')['default']
     NavBar: typeof import('./src/components/NavBar.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    TaskCard: typeof import('./src/components/details/TaskCard.vue')['default']
   }
 }

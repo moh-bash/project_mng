@@ -3,11 +3,32 @@
         <h1 class="my-5">Register</h1>
         <v-alert v-if="authError" type="error">{{ authError }}</v-alert>
         <v-form @submit.prevent="handleRegister">
-          <v-text-field v-model="username" label="Username" :rules="nameRules"/>
-          <v-text-field v-model="email" label="Email" :rules="emailRules"/>
-          <v-text-field v-model="password" label="Password" type="password" :rules="passwordRules"/>
-          <v-text-field v-model="confirmPassword" label="Confirm Password" type="password" :rules="confirmPasswordRules"/>
-          <v-btn :loading="authLoading" :disabled="authLoading" type="submit">Register</v-btn>
+          <v-text-field 
+            v-model="firstName" 
+            label="First Name" 
+            :rules="nameRules"/>
+          <v-text-field 
+            v-model="lastName" 
+            label="Last Name" 
+            :rules="nameRules"/>
+          <v-text-field 
+            v-model="email" 
+            label="Email" 
+            :rules="emailRules"/>
+          <v-text-field 
+            v-model="password" 
+            label="Password" 
+            type="password" 
+            :rules="passwordRules"/>
+          <v-text-field 
+            v-model="confirmPassword" 
+            label="Confirm Password" 
+            type="password" 
+            :rules="confirmPasswordRules"/>
+          <v-btn 
+            :loading="authLoading" 
+            :disabled="authLoading" 
+            type="submit">Register</v-btn>
         </v-form>
   </guest-layout>
 </template>
@@ -20,7 +41,8 @@ export default {
 
   data() {
     return {
-      username: '',
+      firstName: '',
+      lastName: '',
       email: '',
       password: '',
       confirmPassword: '',
@@ -51,7 +73,7 @@ export default {
   },
 
   computed:{
-    ...mapState(useAuthStore,['authError','authLoading'])
+    ...mapState(useAuthStore,['authError','authLoading','token'])
   },
 
   methods:{
@@ -62,17 +84,16 @@ export default {
               this.authError = "Passwords do not match.";
               return;
           }
-          if(!this.username || !this.email || !this.password || !this.confirmPassword){
-              this.authError = "All fields are required.";
+          if(!this.firstName || !this.lastName || !this.email || !this.password || !this.confirmPassword){
+              this.authError = "All fields are required ";
               return;
           }
-          try { 
-            await this.register({
-                  username: this.username,
-                  email: this.email, 
-                  password: this.password,
-              });
-            } catch (error) { 
+          try {
+            await this.register(this.firstName, this.lastName, this.email, this.password);
+            if (this.token) {
+            this.$router.push('/auth/login');
+            }
+            } catch (error) {
                 console.error('Registration failed:', error);
             }
         }

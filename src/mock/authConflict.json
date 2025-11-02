@@ -1,5 +1,0 @@
-{
-  "statusCode": 409,
-  "message": "User with this email already exists",
-  "error": "Conflict"
-}

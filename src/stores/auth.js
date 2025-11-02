@@ -1,78 +1,118 @@
-import { defineStore } from 'pinia';
-import router from '@/router';
-// ⚠️ استيراد بيانات المحاكاة بدلاً من apiClient
-import mockAuthSuccess from '@/mock/authSuccess.json';
-import mockAuthConflict from '@/mock/authConflict.json';
+import { defineStore } from "pinia";
+import { apiurl, getHeader } from "./api";
 
 export const useAuthStore = defineStore('auth', {
     state: () => ({
-        accessToken: localStorage.getItem('access_token') || null, 
-        user: null, 
-        authLoading: false, 
+        user: null,
+        token: localStorage.getItem('token') || null,
+        authLoading: false,
         authError: null,
     }),
-    
-    getters: {
-        isLoggedIn: (state) => !!state.accessToken,
-    },
-    
+
     actions: {
-        // دالة مساعدة لتقليد تأخير الشبكة (لا تُستخدم في الكود الحقيقي)
-        async delay() {
-            return new Promise(resolve => setTimeout(resolve, 800)); // تأخير 800 مللي ثانية
-        },
-
-        // 1. محاكاة التسجيل (POST /auth/register)
-        async register(userData) {
+        async login(email, password) {
             this.authLoading = true;
             this.authError = null;
-            await this.delay(); // 🚨 محاكاة زمن الاستجابة
+            try {
+                let res = await fetch(`${apiurl}/auth/login`, {
+                    method: "POST",
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: email,
+                        password: password
+                    }),
+                });
+                let data = await res.json()
+                if(!res.ok) {
+                    throw new Error(data.message || 'Login failed');
+                }
+                this.user = data.user;
+                this.token = data.access_token;
+                localStorage.setItem('token', this.token);
 
-            // 🚨 منطق المحاكاة: نفترض أن التسجيل يفشل إذا كان البريد هو 'conflict@projy.com'
-            if (userData.email === 'conflict@projy.com') {
-                this.authError = mockAuthConflict.message;
+            } catch(error) {
+                this.authError = error.message;
+                this.user = null;
+                this.token = null;
+                localStorage.removeItem('token');
+            } finally {
                 this.authLoading = false;
-                // يجب أن نرمي خطأ ليتمكن المكون من التعامل معه
-                throw new Error(this.authError);
             }
-            
-            // 🚨 محاكاة النجاح: نستخدم بيانات الاستجابة الناجحة
-            this.accessToken = mockAuthSuccess.access_token;
-            this.user = mockAuthSuccess.user;
-            localStorage.setItem('access_token', this.accessToken);
-            
-            this.authLoading = false;
-            router.push('/login'); 
         },
 
-        // 2. محاكاة تسجيل الدخول (POST /auth/login)
-        async login(credentials) {
+
+        async register(firstName, lastName, email, password) {
             this.authLoading = true;
             this.authError = null;
-            await this.delay(); // 🚨 محاكاة زمن الاستجابة
-            
-            // 🚨 منطق المحاكاة: نفترض أن الدخول ينجح فقط بالبيانات الموحدة
-            if (credentials.email !== 'mock.user@projy.com' || credentials.password !== 'SecurePassword123') {
-                this.authError = 'Invalid email or password (Mock Error)';
-                this.authLoading = false;
-                throw new Error(this.authError);
-            }
-            
-            // 🚨 محاكاة النجاح
-            this.accessToken = mockAuthSuccess.access_token;
-            this.user = mockAuthSuccess.user;
-            localStorage.setItem('access_token', this.accessToken);
+            try {
+                let res = await fetch(`${apiurl}/auth/register`, {
+                    method: "POST",
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        firstName: firstName,
+                        lastName: lastName,
+                        email: email,
+                        password: password,
+                    }),
+                });
+                let data = await res.json();
+                if(!res.ok) {
+                    throw new Error(data.message || 'Registration failed');
+                }
+                this.user = data.user;
+                this.token = data.access_token;
+                localStorage.setItem('token', this.token);
 
-            this.authLoading = false;
-            router.push('/pages/projects'); 
+            } catch(error) {
+                this.authError = error.message;
+                this.user = null;
+                this.token = null;
+                localStorage.removeItem('token');
+            } finally {
+                this.authLoading = false;
+            }
         },
 
-        // 3. الإجراءات الأخرى (تظل كما هي)
-        logout() {
-            this.accessToken = null;
+
+        async logout() {
+            this.authLoading = true;
+            this.authError = null;
+    
             this.user = null;
-            localStorage.removeItem('access_token');
-            router.push('/login');
+            this.token = null;
+
+            localStorage.removeItem('token');
+            this.authLoading = false;
+            
+        },
+
+       async profile() {
+            this.authLoading = true;
+            this.authError = null;
+            try {
+                const res = await fetch( `${apiurl}/auth/profile`, {
+                    method: "GET",
+                    headers: { ...getHeader() } 
+                });
+
+                if (!res.ok) {
+                    let errorData = await res.json();
+                    throw new Error(errorData.message || 'Failed to fetch user profile');
+                }
+
+                let data = await res.json();
+                console.log('Profile data:', data);
+                
+                this.user = data;
+
+            } catch(error) {
+                console.error('Profile fetch error:', error);
+                this.authError = error.message;
+                this.user = null;
+                throw error; 
+            } finally {
+                this.authLoading = false;
+            }
         }
     }
 });
