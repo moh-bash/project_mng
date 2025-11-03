@@ -15,6 +15,7 @@ import Login from '@/pages/Login.vue'
 import Register from '@/pages/Register.vue'
 import projects from '@/pages/projects.vue'
 import ProjecDetails from '@/pages/ProjecDetails.vue'
+import Dash from '@/pages/dash.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -39,6 +40,11 @@ const router = createRouter({
           name: 'project',
           component:ProjecDetails,
           props: true,
+        },
+        {
+          path:'dash',
+          name:'dash',
+          component: Dash,
         }
       ]
     },

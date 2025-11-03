@@ -3,15 +3,23 @@
         <v-container fluid>
             <div class="d-flex justify-space-between align-center mb-4">
                 <h2 class="text-start">Welcome to projects</h2>
-                
-                <v-btn
-                    class="teal-darken-3 text-primary py-0 px-5 text-body-2"
-                    prepend-icon="mdi-plus-circle"
-                    text="create project"
-                    variant="outlined"
-                    rounded="xl"
-                    @click="openCreateDialog"
-                ></v-btn>
+                <div>
+                    <v-btn  
+                        variant="outlined"                        
+                        class="teal-darken-3 text-primary py-0 px-3 text-body-2 me-2"
+                        rounded="xl"
+                        prepend-icon="mdi-view-dashboard-variant"
+                        text="dash"
+                        @click="dahgo"></v-btn>
+                    <v-btn
+                        class="teal-darken-3 text-primary py-0 px-5 text-body-2"
+                        prepend-icon="mdi-plus-circle"
+                        text="create project"
+                        variant="outlined"
+                        rounded="xl"
+                        @click="openCreateDialog"
+                    ></v-btn>
+                </div>
             </div>
             <!-- Edit/ create -->
             <v-dialog v-model="editDialog" max-width="800">
@@ -87,6 +95,7 @@
                         :project="project"
                         @edit-project="openEditDialog"
                         @delete-project="handleDeleteProject"
+                        :srcimg="localimg"
                     />
                 </v-col>
             </v-row>
@@ -131,7 +140,10 @@ export default {
         snackbarText: '',
         snackbarColor: 'background',
         deleteConfirmDialog: false, 
-        projectIdToDelete: null,    
+        projectIdToDelete: null,  
+        localimg: [
+                
+        ]  
       };
     },
     
@@ -151,6 +163,8 @@ export default {
             this.projectToEdit = project; 
             this.editDialog = true;
         },
+
+
 
         
         async successDialog() { 
@@ -203,6 +217,10 @@ export default {
                 this.projectIdToDelete = null;
             }
         },
+
+        dahgo(){
+            this.$router.push({ name: 'dash' });
+        }
                     
     },
     mounted() {

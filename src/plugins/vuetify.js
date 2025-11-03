@@ -38,7 +38,7 @@ export default createVuetify({
             background: '#121212',   
             surface: '#1E1E1E',
             error: '#ca1f3eff',
-            success: '#81C784',
+            success: '#58e65fff',
             app: '#2d2c2cff',
         },
       },

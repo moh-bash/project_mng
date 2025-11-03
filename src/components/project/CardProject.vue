@@ -17,19 +17,19 @@
         <v-img
         height="100"
         @click="goToDetails"
-        src="https://cdn.vuetifyjs.com/images/cards/cooking.png"
+        src="https://img.freepik.com/free-vector/low-poly-abstract-background-design_1048-12395.jpg?semt=ais_hybrid&w=740&q=80"
         cover
         ></v-img>
 
         <v-card-item>
-            <div class="d-flex justify-space-between align-center my-3">
+            <div @click="goToDetails" class="d-flex justify-space-between align-center my-3">
                 <span>{{ project.name }}</span>
                 <span > 
                     <ActionMenu
                     :items="projectActions"
                     :loading="projectsStore.projectsLoading"
                     @select="handleAction"
-                    v-if="project.creatorId === user.userId" />               </span>
+                    />               </span>
 
             </div>
             <v-card-subtitle class="d-flex justify-space-between align-center pa-0 my-1">
@@ -56,7 +56,7 @@
                     <v-icon icon="mdi-calendar-end" size="small"></v-icon>
                     <span class="mx-3">{{ project.dueDate }} </span>
                 </div>
-                <v-chip :color="status" small dark class="ma-0 py-0 px-4 text-capitalize">
+                <v-chip color="success" small dark class="ma-0 py-0 px-4 text-capitalize">
                      Active
                 </v-chip>
             </v-card-subtitle>
@@ -84,17 +84,24 @@ export default {
         project: {
             type: Object,
             required: true,
+        },
+        srcimg: {
+            type: String,
+            required: true
         }
     },
     
     data() {
         return {
-            
+           
         };
     },
     computed: {
         ...mapState(useAuthStore, ['user' ,'authLoading']),
         ...mapStores(useProjectsStore),
+
+
+       
        
         
         projectActions() {
@@ -147,7 +154,7 @@ export default {
             });
         },
     },
-
+   
    
 };
 </script>

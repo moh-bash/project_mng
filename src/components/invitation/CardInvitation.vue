@@ -1,144 +1,82 @@
 <template>
-    <v-list-item class="pa-0 mb-3">
-        <v-card 
-            :loading="isProcessing"
-            variant="tonal"
-            :color="getCardColor" 
-            class="w-100"
-        >
-            <v-card-title class="text-subtitle-1 pb-1">
-                <v-icon start size="small">mdi-email-send-outline</v-icon>
-                دعوة مشروع: **{{ invitation.project.name }}**
-            </v-card-title>
-            
-            <v-card-subtitle class="text-wrap">
-                من: {{ invitation.sender.name }} ({{ invitation.sender.email }})
-            </v-card-subtitle>
-            
-            <v-card-text class="pt-2 pb-1 text-caption text-medium-emphasis">
-                {{ formatCreationDate(invitation.createdAt) }}
-            </v-card-text>
+    <v-card class="mb-3" elevation="2">
+        <v-card-title class="text-subtitle-1">
+            Invitation to **{{ invitation.project.name }}**
+        </v-card-title>
+        <v-card-subtitle>
+            Sent by: {{ invitation.sender.name }}
+        </v-card-subtitle>
 
-            <v-card-actions v-if="invitation.status === 'PENDING'">
-                <v-spacer></v-spacer>
-                
-                <v-btn 
-                    size="small" 
-                    color="success" 
-                    variant="flat" 
-                    :disabled="isProcessing"
-                    @click="handleAccept"
-                >
-                    قبول
-                </v-btn>
-
-                <v-btn 
-                    size="small" 
-                    color="error" 
-                    variant="outlined" 
-                    :disabled="isProcessing"
-                    @click="handleReject"
-                >
-                    رفض
-                </v-btn>
-            </v-card-actions>
-
-            <v-card-actions v-else>
-                <v-chip :color="getStatusChipColor(invitation.status)" size="small">
-                    {{ getStatusText(invitation.status) }}
-                </v-chip>
-            </v-card-actions>
-
-        </v-card>
-    </v-list-item>
+        <v-card-actions class="pt-0">
+            <v-spacer></v-spacer>
+            <v-btn 
+                color="red-darken-1" 
+                variant="text" 
+                @click="reject"
+                :loading="loading"
+            >
+                Reject
+            </v-btn>
+            <v-btn 
+                color="green-darken-1" 
+                variant="flat" 
+                @click="approve"
+                :loading="loading"
+            >
+                Accept
+            </v-btn>
+        </v-card-actions>
+    </v-card>
 </template>
 
 <script>
+import { mapActions } from 'pinia';
 import { useInvitationsStore } from '@/stores/invitations';
 
 export default {
-    // 1. تعريف الـ Prop
     props: {
         invitation: {
             type: Object,
             required: true,
         },
     },
-    
-    // 2. إعداد الحالة المحلية
     data() {
         return {
-            isProcessing: false, // حالة التحميل المحلية
-            invitationsStore: useInvitationsStore(), // تهيئة الـ Store
+            loading: false,
         };
     },
-    
-    // 3. الدوال المحسوبة
-    computed: {
-        // لتلوين البطاقة بناءً على الحالة
-        getCardColor() {
-            return this.invitation.status === 'PENDING' ? 'info' : 'surface-variant';
-        },
-    },
-
-    // 4. الدوال المساعدة ومعالجات الأفعال
     methods: {
-        // لتهيئة التاريخ
-        formatCreationDate(dateString) {
-            if (!dateString) return 'تاريخ غير معروف';
-            const date = new Date(dateString);
-            return date.toLocaleDateString('ar-EG', { year: 'numeric', month: 'short', day: 'numeric' });
-        },
+        // ✅ جلب دوال القبول والرفض من المتجر
+        ...mapActions(useInvitationsStore, ['approveInvitation', 'rejectInvitation']),
 
-        // لعرض نص الحالة
-        getStatusText(status) {
-            switch (status) {
-                case 'APPROVED': return 'تم القبول';
-                case 'REJECTED': return 'تم الرفض';
-                default: return 'معلقة';
-            }
-        },
-
-        // لتلوين شريحة الحالة
-        getStatusChipColor(status) {
-            switch (status) {
-                case 'APPROVED': return 'success';
-                case 'REJECTED': return 'error';
-                default: return 'warning';
+        async approve() {
+            this.loading = true;
+            try {
+                // استدعاء دالة القبول من المتجر
+                await this.approveInvitation(this.invitation.id);
+                // 💡 هنا يمكنك عرض رسالة نجاح للمستخدم
+                // الإزالة من القائمة يتم تلقائيًا عبر منطق الـ filter في المتجر
+            } catch (error) {
+                // 💡 هنا يمكنك عرض رسالة خطأ للمستخدم
+                console.error('Approval failed:', error);
+            } finally {
+                this.loading = false;
             }
         },
         
-        // معالج القبول
-        async handleAccept() {
-            this.isProcessing = true;
+        async reject() {
+            this.loading = true;
             try {
-                // استدعاء أكشن Pinia
-                await this.invitationsStore.acceptInvitation(this.invitation.id);
+                // استدعاء دالة الرفض من المتجر
+                await this.rejectInvitation(this.invitation.id);
+                // 💡 هنا يمكنك عرض رسالة نجاح للمستخدم
             } catch (error) {
-                alert('فشل في قبول الدعوة: ' + error.message);
+                // 💡 هنا يمكنك عرض رسالة خطأ للمستخدم
+                console.error('Rejection failed:', error);
             } finally {
-                this.isProcessing = false;
-            }
-        },
-
-        // معالج الرفض
-        async handleReject() {
-            this.isProcessing = true;
-            try {
-                // استدعاء أكشن Pinia
-                await this.invitationsStore.rejectInvitation(this.invitation.id);
-            } catch (error) {
-                alert('فشل في رفض الدعوة: ' + error.message);
-            } finally {
-                this.isProcessing = false;
+                this.loading = false;
             }
         },
     },
 };
 </script>
-
-<style scoped>
-.text-wrap {
-    white-space: normal;
-}
-</style>

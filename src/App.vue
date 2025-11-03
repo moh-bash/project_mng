@@ -1,7 +1,7 @@
 <template>
   <v-app>
         <NavBar/>
-    <router-view class="mt-14"/>
+    <router-view class="pt-14"/>
   </v-app>
 </template>
 
