@@ -2,7 +2,7 @@
     <div>
         <v-container fluid>
             <div class="d-flex justify-space-between align-center mb-4">
-                <h2 class="text-start">Welcome to projects</h2>
+                <h2 class="text-start">{{ $t('articles.title') }}</h2>
                 <div>
                     <v-btn  
                         variant="outlined"                        

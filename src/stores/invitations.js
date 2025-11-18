@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { apiurl, getHeader } from "./api"; 
 
+
 export const useInvitationsStore = defineStore("invitations", {
     state: () => ({
         myInvitations: [],
@@ -43,37 +44,28 @@ export const useInvitationsStore = defineStore("invitations", {
         },
 
         async sendInvitation(invitationData) {
-            this.invitationsLoading = true;
-            this.invitationsError = null;
-            try {
-                const res = await fetch(`${apiurl}/invitations`, {
-                    method: 'POST',
-                    headers: {
-                        ...getHeader(),
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(invitationData),
-                });
+        this.invitationsLoading = true;
+        this.invitationsError = null;
+        try {
+            const res = await fetch(`${apiurl}/invitations`, {
+                method: 'POST',
+                headers: { ...getHeader(), 'Content-Type': 'application/json' },
+                body: JSON.stringify(invitationData),
+            });
 
-                if (!res.ok) {
-                    throw new Error(`Failed to send invitation: ${res.statusText}`);
-                }
-
-                let newInvitation = await res.json();
-                
-                console.log("Invitation sent successfully:", newInvitation);
-                
-                return newInvitation;
-
-            } catch (error) {
-                this.invitationsError = error.message;
-                console.error("Error sending invitation:", error);
-                throw error; 
-            } finally {
-                this.invitationsLoading = false;
+            if (!res.ok) {
+                const errorData = await res.json();
+                throw new Error(`Failed to send invitation: ${JSON.stringify(errorData)}`);
             }
-        },
 
+            return await res.json();
+        } catch (error) {
+            this.invitationsError = error.message;
+            throw error;
+        } finally {
+            this.invitationsLoading = false;
+        }
+    },
         async approveInvitation(invitationId) {
             this.invitationsLoading = true;
             this.invitationsError = null;

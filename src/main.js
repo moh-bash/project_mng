@@ -13,11 +13,15 @@ import App from './App.vue'
 // Composables
 import { createApp } from 'vue'
 
+import i18n from './plugins/i18n'
+
 // Styles
 import 'unfonts.css'
 
 const app = createApp(App)
 
 registerPlugins(app)
+
+app.use(i18n);
 
 app.mount('#app')

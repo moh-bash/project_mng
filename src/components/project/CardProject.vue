@@ -22,7 +22,7 @@
         ></v-img>
 
         <v-card-item>
-            <div @click="goToDetails" class="d-flex justify-space-between align-center my-3">
+            <div  class="d-flex justify-space-between align-center my-3">
                 <span>{{ project.name }}</span>
                 <span > 
                     <ActionMenu

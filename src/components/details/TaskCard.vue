@@ -32,7 +32,7 @@
                                         <v-btn density="compact" 
                                             icon="mdi-trash-can-outline" 
                                             class="elevat me-3 text-error"
-                                            @click="$emit('deletetask', task.id)">
+                                            @click="openDeletl">
                                         </v-btn>
                                         <v-btn 
                                             density="compact" 
@@ -63,13 +63,39 @@
                         </v-expansion-panel>
                     </v-expansion-panels>
                 </div>
-               
             </div>
-            
-       </v-card>
+        </v-card>
+        <v-dialog v-model=" onDelete" max-width="300">
+            <v-card>
+                <v-card-title class="bg-error py-2">
+                    Delete
+                </v-card-title>
+                <v-card-text>
+                    are yu sure you want to delet the task
+                </v-card-text>
+                <v-divider></v-divider>
+                <v-card-actions>
+                    <v-btn 
+                        :loading="tasksLoading"
+                        @click="closedelete">
+                        close
+                    </v-btn>
+                    <v-btn
+                        color="error" 
+                        :loading="tasksLoading"
+                        @click="deletetask">
+                        Delete
+                    </v-btn>
+
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     
 </template>
 <script>
+import { useTasksStore } from '@/stores/tasks';
+import { mapActions } from 'pinia';
+
 export default{
     name:'TaskCard',
     props: {
@@ -79,7 +105,38 @@ export default{
         }
     },
 
+    data(){
+        return{
+            onDelete:false,
+        }
+    },
+
+
+    methods: {
+        ...mapActions(useTasksStore,['deleteTask']),
+
+        openDeletl(){
+            this.onDelete = true;
+        },
+
+        closedelete(){
+            this.onDelete =false ;
+        },
+
+         async deletetask() {
+            const tasksStore = useTasksStore();
+            try {
+                await tasksStore.deleteTask(this.task.id);
+                this.onDelete = false;
+            } catch (err) {
+                console.error('Error deleting task:', err);
+            }
+        }
+    },
+
     mounted() {
+        
+
     
         
     }

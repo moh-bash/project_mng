@@ -14,6 +14,7 @@ declare module 'vue' {
     ActionMenu: typeof import('./src/components/project/ActionMenu.vue')['default']
     CardInvitation: typeof import('./src/components/invitation/CardInvitation.vue')['default']
     CardProject: typeof import('./src/components/project/CardProject.vue')['default']
+    Dashboar: typeof import('./src/components/Dashboar.vue')['default']
     DashBoard: typeof import('./src/components/details/dashBoard.vue')['default']
     DetAils: typeof import('./src/components/details/detAils.vue')['default']
     FormCreateProject: typeof import('./src/components/project/FormCreateProject.vue')['default']

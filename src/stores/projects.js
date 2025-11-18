@@ -111,7 +111,6 @@ export const useProjectsStore = defineStore('projects', {
             }
         },
 
-        // Retrieves a specific project with all its details
         async fetchProjectById(projectId) {
             this.projectsLoading = true;
             this.projectsError = null;

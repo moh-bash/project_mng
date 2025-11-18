@@ -9,11 +9,12 @@
                     </div>
                     <v-timeline align="start" density="compact" >
                     <v-timeline-item
-                                v-for="user in currentProject.assignedUsers"
-                                :key="user.id" 
-                                size="small"
-                                :dot-color="timelineColors[index % timelineColors.length]"
-                            >
+                        v-for="(user, index) in currentProject?.assignedUsers || []"
+                        :key="user.id"
+                        size="small"
+                        :dot-color="timelineColors[index % timelineColors.length]"
+                        >
+
                         <div class="mb-4">
                             <div class="font-weight-normal">
                             <strong>{{ user.name }}</strong> 
@@ -33,15 +34,18 @@
                         <v-icon class="me-1 text-error">mdi-bookmark-multiple</v-icon>
                         Information
                     </div>
-                    <v-avatar>
-                        
-                    </v-avatar>
+                    <div>
+                        <v-avatar class="pa-0" size="90">
+                            <v-icon style="font-size: 90px;">mdi-account-circle</v-icon>
+                        </v-avatar>
+                        <h3>Name user</h3>
+                    </div>
                 </v-card-text>
             </v-card>
         </v-col>
         <v-col>
             <v-card class="mx-auto rounded-xl elevation-3" min-height="355">
-                <v-card-text>
+                <v-card-text >
                     <div class="font-weight-bold text-h4 text-start ms-1 mb-2">
                         <v-icon class="me-1 text-orange-darken-2">mdi-security</v-icon>
                         Admin
@@ -68,9 +72,17 @@
                             >
                                 Send
                             </v-btn>
-                            <v-alert v-if="invitationsError" type="error" class="mb-3">
-                                Failed: {{ invitationsError }}
+                            <v-alert
+                                v-if="alertMessage"
+                                :type="alertType"
+                                class="mt-4"
+                                variant="tonal"
+                                closable
+                                @click:close="alertMessage = ''"
+                                >
+                                {{ alertMessage }}
                             </v-alert>
+
                             <div class="bg-surface mx-auto d-flex align-center px-3 pt-7 ps-9">
                                 <v-btn density="compact" icon="mdi-pencil" class="elevat me-3"></v-btn>
                                 <v-btn density="compact" icon="mdi-trash-can-outline" class="elevat me-3 text-error"></v-btn>
@@ -82,7 +94,6 @@
                 </v-card-text>
             </v-card>
         </v-col>
-
     </v-row>
 </template>
 <script>
@@ -109,12 +120,18 @@ export default{
                 v => !!v || 'Email is required',
                 v => /.+@.+\..+/.test(v) || 'ERROOR emdl',
             ],
+            alertMessage: '',
+            alertType: '',  
         }
     },
 
     computed: {
         ...mapState(useProjectsStore, ['currentProject','projectsLoading', 'projectsError']),
-        ...mapState(useInvitationsStore, ['invitationsError' , 'invitationsLoading' , '']),
+        ...mapState(useInvitationsStore, ['invitationsError', 'invitationsLoading']),
+        isFormValid() {
+            return this.emailRules.every(rule => rule(this.receiverEmail) === true);
+        }
+
     },  
         
 
@@ -122,21 +139,30 @@ export default{
         ...mapActions(useProjectsStore, ['fetchProjectById']),
         ...mapActions(useInvitationsStore, ['sendInvitation']),
         async handleSendInvitation() {
-            if (!this.isFormValid) return;
+        if (!this.isFormValid) return;
 
-            const invitationData = {
-                receiverEmail: this.receiverEmail,
-                projectId: Number(this.projectId) 
-            };
+        const projectId = Number(this.$route.params.id); // id المشروع من الراوتر
 
-            try {
-                await this.sendInvitation(invitationData);
-                this.receiverEmail = '';                
-            } catch (error) {
-                console.error("noooooo invitation:", error);
-            }
+        if (!projectId) {
+            console.error("❌ Project ID is missing!");
+            return;
         }
+
+        const invitationData = {
+            receiverEmail: this.receiverEmail,
+            projectId
+        };
+
+        try {
+            await this.sendInvitation(invitationData);
+            this.receiverEmail = '';
+        } catch (error) {
+            console.error(" Error:", error);
+        }
+    }
     },
+
+ 
 
     
 

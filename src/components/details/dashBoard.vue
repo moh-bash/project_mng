@@ -14,7 +14,6 @@
     ></v-sparkline>
 
     <v-divider></v-divider>
-
     <v-row>
       <v-col
         cols="12"
@@ -56,9 +55,6 @@
         </v-row>
       </v-col>
     </v-row>
-
-  
-
               </v-card-text>
             </v-card>
         </v-col>
