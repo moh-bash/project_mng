@@ -20,7 +20,7 @@ This app lets you create, organize, and track tasks/projects with a modern front
 ## 📦 Tech Stack
 
 🛠 Built with:  
-- **Vue.js** (Frontend)  
+- **Vue.js** & **vuetify** (Frontend)  
 - **Vite** (Fast development tooling)  
 - **JavaScript**
 - **CSS** for styling
