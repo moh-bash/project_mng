@@ -31,8 +31,9 @@ This app lets you create, organize, and track tasks/projects with a modern front
 
 1. **Clone repository**  
    ```bash
-   `
-   git clone https://github.com/moh-bash/project_mng.git`
+
+   
+   git clone https://github.com/moh-bash/project_mng.git
 
 2.Install dependencies
 `npm install
@@ -63,7 +64,7 @@ Include screenshots of:
 
 ---
 
-##🧠 What I Learned
+## 🧠 What I Learned
 - Handling state in Vue
 - Component architecture
 - Frontend interactions
