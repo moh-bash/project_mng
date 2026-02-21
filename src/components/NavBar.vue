@@ -2,9 +2,9 @@
   <v-app-bar density="comfortable" class="bg-primary px-6" height="64" elevation="4">
 
     <div v-if="Layoutppp && user" class="d-flex align-center">
-      <v-menu offset-y location="bottom right">
+      <v-menu offset-y location="bottom end">
         <template #activator="{ props }">
-          <div v-bind="props" class="d-flex align-center cursor-pointer"> 
+          <div v-bind="props" class="d-flex align-center cursor-pointer">
             <v-avatar color="secondary" size="36">
               <span class="text-h6 text-background">{{ user.name ? user.name[0] : '' }}</span>
             </v-avatar>
@@ -51,11 +51,11 @@
     <v-spacer></v-spacer>
 
     <div class="d-flex align-center">
-      <v-btn icon @click="toggleLanguage" class="mr-2">
+      <v-btn icon @click="toggleLanguage" class="me-2">
         <v-icon color="white">mdi-web</v-icon>
       </v-btn>
 
-      <v-btn icon @click="toggleTheme" class="mr-2">
+      <v-btn icon @click="toggleTheme" class="me-2">
         <v-icon color="white">{{ isDark ? 'mdi-white-balance-sunny' : 'mdi-moon-waning-crescent' }}</v-icon>
       </v-btn>
 
@@ -68,7 +68,7 @@
     </div>
   </v-app-bar>
 
-  <v-navigation-drawer v-model="invitationsDrawer" location="right" temporary>
+  <v-navigation-drawer v-model="invitationsDrawer" location="end" temporary>
     <v-list-item class="bg-primary text-white">
       <v-list-item-title class="text-h6">
         <v-icon start>mdi-bell-outline</v-icon>
@@ -87,7 +87,7 @@
 </template>
 
 <script>
-import { useTheme } from 'vuetify';
+import { useTheme, useLocale } from 'vuetify';
 import { useAuthStore } from '@/stores/auth';
 import { useInvitationsStore } from '@/stores/invitations';
 import { mapState, mapActions } from 'pinia';
@@ -100,6 +100,7 @@ export default {
     return {
       invitationsDrawer: false,
       vuetifyTheme: null,
+      vuetifyLocale: null,
     };
   },
   computed: {
@@ -117,19 +118,27 @@ export default {
     ...mapActions(useAuthStore, ['logout', 'profile']),
     ...mapActions(useInvitationsStore, ['fetchInvitations']),
 
-   toggleTheme() {
+    toggleTheme() {
       if (!this.vuetifyTheme) return;
       this.vuetifyTheme.global.name = this.isDark ? 'light' : 'dark';
       localStorage.setItem('theme', this.vuetifyTheme.global.name);
     },
 
-
     toggleLanguage() {
       const current = i18n.global.locale.value;
       const newLang = current === 'en' ? 'ar' : 'en';
+
       i18n.global.locale.value = newLang;
+
+      if (this.$vuetify) {
+        this.$vuetify.locale.current = newLang;
+      } else if (this.vuetifyLocale) {
+        this.vuetifyLocale.current.value = newLang;
+      }
+
       localStorage.setItem('lang', newLang);
       document.documentElement.dir = newLang === 'ar' ? 'rtl' : 'ltr';
+      document.documentElement.lang = newLang;
     },
 
     handleLogout() {
@@ -139,11 +148,18 @@ export default {
   },
   async created() {
     this.vuetifyTheme = useTheme();
+    this.vuetifyLocale = useLocale();
     await this.profile();
     await this.fetchInvitations();
 
-    const lang = i18n.global.locale.value || 'en';
+    const lang = localStorage.getItem('lang') || i18n.global.locale.value || 'en';
+
     document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+    document.documentElement.lang = lang;
+
+    if (this.$vuetify) {
+      this.$vuetify.locale.current = lang;
+    }
   },
 };
 </script>

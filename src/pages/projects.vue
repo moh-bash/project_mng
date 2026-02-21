@@ -1,20 +1,20 @@
 <template>
     <div>
-        <v-container fluid>
+        <v-container>
             <div class="d-flex justify-space-between align-center mb-4">
                 <h2 class="text-start">{{ $t('articles.title') }}</h2>
                 <div>
-                    <v-btn  
-                        variant="outlined"                        
+                    <v-btn
+                        variant="outlined"
                         class="teal-darken-3 text-primary py-0 px-3 text-body-2 me-2"
                         rounded="xl"
                         prepend-icon="mdi-view-dashboard-variant"
-                        text="dash"
+                        :text="$t('dashboard')"
                         @click="dahgo"></v-btn>
                     <v-btn
                         class="teal-darken-3 text-primary py-0 px-5 text-body-2"
                         prepend-icon="mdi-plus-circle"
-                        text="create project"
+                        :text="$t('create_project')"
                         variant="outlined"
                         rounded="xl"
                         @click="openCreateDialog"
@@ -25,14 +25,14 @@
             <v-dialog v-model="editDialog" max-width="800">
                 <v-card>
                     <v-card-title class="headline bg-primary text-white">
-                        {{ projectToEdit ? ' Edit project' : '  create project' }}
+                        {{ projectToEdit ? $t('edit_project') : $t('create_project') }}
                     </v-card-title>
-                    
+
                     <FormCreateProject
-                      :existing-project="projectToEdit" 
-                      @close="closeDialog"       
+                      :existing-project="projectToEdit"
+                      @close="closeDialog"
                       @success="successDialog"
-                      @form-error="handleFormError"     
+                      @form-error="handleFormError"
                     />
                 </v-card>
             </v-dialog>
@@ -41,10 +41,10 @@
             <v-dialog v-model="deleteConfirmDialog" max-width="500">
                 <v-card>
                     <v-card-title class="headline bg-error text-white">
-                        Delete project
+                        {{ $t('delete_project') }}
                     </v-card-title>
                     <v-card-text class="py-4">
-                        Are you sure you want to delete this project?
+                        {{ $t('are_you_sure_you_want_to_delete_this_project') }}
                     </v-card-text>
                     <v-divider></v-divider>
                     <v-card-actions>
@@ -59,7 +59,7 @@
                         <v-btn
                             color="error"
                             variant="flat"
-                            @click="confirmDeletion" 
+                            @click="confirmDeletion"
                             :loading="projectsLoading"
                         >
                             Delete
@@ -67,13 +67,13 @@
                     </v-card-actions>
                 </v-card>
             </v-dialog>
-            
+
             <div v-if="projectsLoading" class="text-center py-10">
-                <v-progress-circular 
-                    indeterminate 
-                    color="teal-darken-3" 
+                <v-progress-circular
+                    indeterminate
+                    color="teal-darken-3"
                     size="64"></v-progress-circular>
-                <p class="mt-4 text-subtitle-1">loading..</p>
+                <p class="mt-4 text-subtitle-1">{{ $t('loading') }}</p>
             </div>
             <v-alert
                 v-else-if="projectsError"
@@ -85,13 +85,13 @@
             </v-alert>
             <div v-else-if="projects && projects.length === 0" class="text-center py-10">
                 <v-icon @click="openCreateDialog" size="80" color="grey-lighten-1">mdi-plus-circle</v-icon>
-                <h3 class="mt-4 text-h6">No project available</h3>
+                <h3 class="mt-4 text-h6">{{ $t('no_project_available') }}</h3>
             </div>
             <v-row  v-else dense>
-                <v-col cols="12" sm="6" md="4" lg="3" class="pa-3"
+                <v-col cols="12" sm="6" md="4" lg="4" class="pa-3"
                     v-for="project in projects"
-                    :key="project.id"> 
-                    <CardProject 
+                    :key="project.id">
+                    <CardProject
                         :project="project"
                         @edit-project="openEditDialog"
                         @delete-project="handleDeleteProject"
@@ -122,7 +122,7 @@
 
 <script>
 import { useProjectsStore } from '@/stores/projects';
-import { mapState, mapActions } from 'pinia'; 
+import { mapState, mapActions } from 'pinia';
 import CardProject from '@/components/project/CardProject.vue';
 import FormCreateProject from '@/components/project/FormCreateProject.vue';
 
@@ -131,28 +131,28 @@ export default {
       CardProject,
       FormCreateProject,
     },
-    
+
     data() {
       return {
         editDialog: false,
         projectToEdit: null,
-        snackbar: false,       
+        snackbar: false,
         snackbarText: '',
         snackbarColor: 'background',
-        deleteConfirmDialog: false, 
-        projectIdToDelete: null,  
+        deleteConfirmDialog: false,
+        projectIdToDelete: null,
         localimg: [
-                
-        ]  
+
+        ]
       };
     },
-    
+
     computed: {
       ...mapState(useProjectsStore, ['projects', 'projectsLoading', 'projectsError']),
     },
 
     methods: {
-        ...mapActions(useProjectsStore, ['fetchProjects', 'deleteProject']), 
+        ...mapActions(useProjectsStore, ['fetchProjects', 'deleteProject']),
 
         openCreateDialog() {
             this.projectToEdit = null;
@@ -160,26 +160,26 @@ export default {
         },
 
         openEditDialog(project) {
-            this.projectToEdit = project; 
+            this.projectToEdit = project;
             this.editDialog = true;
         },
 
 
 
-        
-        async successDialog() { 
-            const isEditing = !!this.projectToEdit; 
+
+        async successDialog() {
+            const isEditing = !!this.projectToEdit;
             this.editDialog = false;
-            this.projectToEdit = null; 
-            
+            this.projectToEdit = null;
+
             await this.$nextTick();
-            await this.fetchProjects(); 
+            await this.fetchProjects();
             this.snackbarText = isEditing ? 'Project updated successfully' : 'Project created successfully';
             this.snackbarColor = 'secondary';
             this.snackbar = true;
 
         },
-        
+
         closeDialog() {
             this.editDialog = false;
             this.projectToEdit = null;
@@ -194,19 +194,19 @@ export default {
 
         handleDeleteProject(projectId) {
             this.projectIdToDelete = projectId;
-            this.deleteConfirmDialog = true; 
+            this.deleteConfirmDialog = true;
         },
 
         async confirmDeletion() {
-            if (!this.projectIdToDelete) return; 
-            
+            if (!this.projectIdToDelete) return;
+
             try {
-                await this.deleteProject(this.projectIdToDelete); 
+                await this.deleteProject(this.projectIdToDelete);
                 this.snackbarText = 'Project deleted successfully';
                 this.snackbarColor = 'success';
                 this.snackbar = true;
                 await this.$nextTick();
-                await this.fetchProjects(); 
+                await this.fetchProjects();
 
             } catch (error) {
                 this.snackbarText = error.message || 'Failed to delete project';
@@ -221,13 +221,13 @@ export default {
         dahgo(){
             this.$router.push({ name: 'dash' });
         }
-                    
+
     },
     mounted() {
-        this.fetchProjects(); 
+        this.fetchProjects();
     },
-    
-   
+
+
 };
 </script>
 <style>

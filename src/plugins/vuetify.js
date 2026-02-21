@@ -10,11 +10,19 @@ import 'vuetify/styles'
 
 // Composables
 import { createVuetify } from 'vuetify'
+const currentLang = localStorage.getItem('lang') || 'en'
 const currentTheme = localStorage.getItem('theme') || 'light'
 
 
 // https://vuetifyjs.com/en/introduction/why-vuetify/#feature-guides
 export default createVuetify({
+  locale: {
+    locale: currentLang,
+    rtl: {
+      ar: true,
+    },
+  },
+
   theme: {
     defaultTheme: currentTheme,
     themes: {
@@ -33,9 +41,9 @@ export default createVuetify({
       dark: {
         dark: true,
         colors: {
-            primary: '#a34db6ff',       
+            primary: '#a34db6ff',
             secondary: '#f6f5f1ff',
-            background: '#121212',   
+            background: '#121212',
             surface: '#1E1E1E',
             error: '#ca1f3eff',
             success: '#58e65fff',

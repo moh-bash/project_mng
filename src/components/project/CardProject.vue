@@ -2,7 +2,7 @@
     <v-card
         :disabled="loading"
         :loading="loading"
-        class="mx-auto"
+        class="mx-auto rounded-xl border-md pa-4"
         rounded="lg"
     >
         <template v-slot:loader="{ isActive }">
@@ -13,18 +13,11 @@
             indeterminate
         ></v-progress-linear>
         </template>
-       
-        <v-img
-        height="100"
-        @click="goToDetails"
-        src="https://img.freepik.com/free-vector/low-poly-abstract-background-design_1048-12395.jpg?semt=ais_hybrid&w=740&q=80"
-        cover
-        ></v-img>
 
         <v-card-item>
-            <div  class="d-flex justify-space-between align-center my-3">
-                <span>{{ project.name }}</span>
-                <span > 
+            <div  class="d-flex justify-space-between align-center my-3 ">
+                <span @click="goToDetails" class="cursor-pointer font-weight-bold text-primary text-22 text-truncate me-3 mb-2">{{ project.name }}</span>
+                <span >
                     <ActionMenu
                     :items="projectActions"
                     :loading="projectsStore.projectsLoading"
@@ -34,12 +27,11 @@
             </div>
             <v-card-subtitle class="d-flex justify-space-between align-center pa-0 my-1">
                 <div >
-                    <v-avatar size="24" color="success">
+                    <v-avatar size="27" color="teal-darken-3">
                         <template v-if="project.avatar">
                             <img :src="project.creator.avatar">
                         </template>
                         <span class="text-h6 text-white" v-else>{{ project.creator.name ? project.creator.name[0] : '' }}</span>
-
                     </v-avatar>
                     <span class="mx-3">{{ project.creator.name }}</span>
                 </div>
@@ -62,10 +54,10 @@
             </v-card-subtitle>
 
 
-            <v-card-subtitle class="text-start pa-0 mt-1">
+            <v-card-subtitle class="text-start pa-0 mt-2">
                 {{ project.description }}
             </v-card-subtitle>
-        </v-card-item> 
+        </v-card-item>
     </v-card>
 </template>
 <script>
@@ -76,7 +68,7 @@ import { useAuthStore } from '@/stores/auth';
 
 export default {
     name: 'CardProject',
-    emits: ['edit-project', 'delete-project'], 
+    emits: ['edit-project', 'delete-project'],
     components: {
         ActionMenu
     },
@@ -90,10 +82,10 @@ export default {
             required: true
         }
     },
-    
+
     data() {
         return {
-           
+
         };
     },
     computed: {
@@ -101,14 +93,14 @@ export default {
         ...mapStores(useProjectsStore),
 
 
-       
-       
-        
+
+
+
         projectActions() {
             return [
-                { title: 'Edit', prependIcon: 'mdi-pencil', code: 'edit' },
+                { title: this.$t('edit_project'), prependIcon: 'mdi-pencil', code: 'edit' },
                 { type: 'divider' },
-                { title: 'Delete', prependIcon: 'mdi-trash-can', code: 'delete' },
+                { title: this.$t('delete_project'), prependIcon: 'mdi-trash-can', code: 'delete' },
             ];
         },
 
@@ -131,30 +123,30 @@ export default {
     methods: {
 
         ...mapActions(useAuthStore,['profile']),
-        
+
         handleAction(actionCode) {
             switch (actionCode) {
                 case 'edit':
                     this.openEditDialog();
                     break;
                 case 'delete':
-                    this.$emit('delete-project', this.project.id); 
+                    this.$emit('delete-project', this.project.id);
                     break;
             }
         },
-        
+
         openEditDialog() {
-            this.$emit('edit-project', this.project); 
+            this.$emit('edit-project', this.project);
         },
 
         goToDetails() {
-            this.$router.push({ 
+            this.$router.push({
                 name: 'project',
                 params: { id: this.project.id }
             });
         },
     },
-   
-   
+
+
 };
 </script>
