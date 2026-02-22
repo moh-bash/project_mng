@@ -96,7 +96,6 @@ export const useAuthStore = defineStore("auth", {
         }
 
         let data = await res.json();
-        console.log("Profile data:", data);
 
         this.user = data;
       } catch (error) {

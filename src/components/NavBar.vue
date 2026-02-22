@@ -1,6 +1,5 @@
 <template>
   <v-app-bar density="comfortable" class="bg-primary px-6" height="64" elevation="4">
-
     <div v-if="Layoutppp && user" class="d-flex align-center">
       <v-menu offset-y location="bottom end">
         <template #activator="{ props }">

@@ -1,10 +1,8 @@
 <template>
     <v-container fluid class="pa-0">
-          
-
         <div v-if="projectsLoading">
             <v-progress-circular indeterminate color="primary"></v-progress-circular>
-            <div class="mt-4">  LOaginng...</div>
+            <div class="mt-4">{{  }}</div>
         </div>
         <div v-else>
             <v-card-title>
@@ -125,38 +123,38 @@
 
                             </div>
                             <!-- 11111111111111111 -->
-                        
-    
+
+
                         <v-chip color="primary" variant="flat" size="x-small">
                             <v-icon class="me-1">mdi-sort-calendar-ascending</v-icon>
                             <p>{{ currentProject.dueDate }}</p>
                         </v-chip>
-    
+
                         <v-chip color="secondary" variant="flat" size="x-small">
                             <v-icon class="me-1">mdi-security</v-icon>
                             <p>{{ currentProject.role }}</p>
                         </v-chip>
-    
+
                         <v-chip color="red" variant="flat" size="x-small">
                             <v-icon class="me-1">mdi-account-group</v-icon>
                             <p>{{ currentProject.assignedUsers.length }}</p>
                         </v-chip>
-    
+
                         <v-chip color="green" variant="flat" size="x-small">
                             <v-icon class="me-1">mdi-account-circle</v-icon>
                             <p>{{ currentProject.creator.name }}</p>
                         </v-chip>
-                        
+
                     </div>
                 </div>
             </v-card-title>
             <div>
                 <div class="barbuttm">
-    
-                    <v-tabs 
-                        class="tabper elevation-5 rounded-xl px-3 bg-app" 
-                        v-model="activeTab" 
-                        color="primary" 
+
+                    <v-tabs
+                        class="tabper elevation-5 rounded-xl px-3 bg-app"
+                        v-model="activeTab"
+                        color="primary"
                         >
                         <v-tab class="tabch" :value="0">
                             <v-icon start>mdi-view-dashboard-variant-outline</v-icon>
@@ -172,23 +170,23 @@
                         </v-tab>
                     </v-tabs>
                 </div>
-    
+
                 <v-divider></v-divider>
-    
+
                 <v-window v-model="activeTab">
-                    
+
                     <v-window-item :value="0">
                         <dashBoard/>
                     </v-window-item>
-    
+
                     <v-window-item :value="1">
                        <kanBan :id="id" :key="taskRefreshKey"/>
                     </v-window-item>
-    
+
                     <v-window-item :value="2">
                         <detAils :projectId="currentProjectId"/>
                     </v-window-item>
-    
+
                 </v-window>
             </div>
         </div>
@@ -221,15 +219,15 @@ export default{
         return {
             activeTab: 1,
             dialog: false,
-            isFormValid: false, 
-            taskRefreshKey: 0, 
+            isFormValid: false,
+            taskRefreshKey: 0,
             newTask: {
                 name: '',
                 description: '',
-                startDate: new Date().toISOString().substr(0, 10), 
+                startDate: new Date().toISOString().substr(0, 10),
                 endDate: null,
-                projectId: this.id, 
-                userId: null, 
+                projectId: this.id,
+                userId: null,
                 statusId: 1,
             },
         };
@@ -247,8 +245,8 @@ export default{
         },
 
        projectUsers() {
-           
-            
+
+
             let users123 = this.currentProject.assignedUsers;
             let cer123 =this.currentProject.creator;
             let allusers = [...users123];
@@ -260,12 +258,12 @@ export default{
 
 
             return allusers.map(user => ({
-                title: user.name, 
+                title: user.name,
                 value: user.id
-            })); 
+            }));
         },
     },
-    
+
     methods: {
         ...mapActions(useProjectsStore, ['fetchProjectById']),
         ...mapActions(useTasksStore,['createTask']),
@@ -299,16 +297,16 @@ export default{
              this.newTask = {
                 name: '',
                 description: '',
-                startDate: new Date().toISOString().substr(0, 10), 
+                startDate: new Date().toISOString().substr(0, 10),
                 endDate: null,
-                projectId: this.id, 
-                userId: null, 
+                projectId: this.id,
+                userId: null,
                 statusId: 1,
             };
             this.isFormValid = false;
         }
 
-        
+
     },
 
     async created() {
@@ -330,6 +328,5 @@ export default{
         border-radius: 20px;
         z-index: 99;
     }
-    
+
 </style>
-    

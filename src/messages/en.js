@@ -1,7 +1,7 @@
 import { da, en } from "vuetify/locale"
 
 export default {
-    title: 'Project Manager',
+    title: 'Manager',
     subtitle: 'Most Valuable Projects',
     // articlesTitle: 'Articles',
     // articlesSubtitle: 'List of articles',
@@ -16,7 +16,7 @@ export default {
     email: 'Email',
     password: 'Password',
     dashboard: 'Dashboard',
-    create_project: 'Create Project',
+    create_project: 'Create Pro..',
     edit_project: 'Edit Project',
     delete_project: 'Delete Project',
     are_you_sure_you_want_to_delete_this_project: 'Are you sure you want to delete this project?',
@@ -29,7 +29,7 @@ export default {
         title: 'projects',
         subtitle: 'List of projects',
     },
-    project_manager:'project manager',
+    project_manager:'Manager',
 
 
     $vuetify: {

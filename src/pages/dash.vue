@@ -1,11 +1,8 @@
 <template>
-  <v-container>
-    <h2 class="mb-6">Dashboard</h2>
-    <div style="max-height: 500px;">
-      <Dashboar />
 
+    <div>
+      <Dashboar/>
     </div>
-  </v-container>
 </template>
 
 <script>
