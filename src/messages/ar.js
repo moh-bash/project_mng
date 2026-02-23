@@ -29,7 +29,15 @@ export default {
     no_project_available: 'لا يوجد مشروع متاح',
     edit_project: 'تعديل المشروع',
     delete_project: 'حذف المشروع',
-
+    dashboard: {
+      title: 'إحصائيات المشروع',
+      subtitle: 'نظرة عامة على الأداء في الوقت الحقيقي',
+      total_projects: 'إجمالي المشاريع',
+      total_tasks: 'إجمالي المهام',
+      status_distribution: 'توزيع الحالة',
+      activity_timeline: 'جدول النشاط',
+      
+    },
     $vuetify: {
         ...ar,
     }

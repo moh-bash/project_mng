@@ -9,9 +9,9 @@ export const useDashboardStore = defineStore('dashboard', {
   }),
 
   getters: {
-    totalProjects: (state) => state.stats?.totalProjects || 0,
-    totalTasks: (state) => state.stats?.totalTasks || 0,
-    statusCounts: (state) => state.stats?.statusCounts || [],
+    totalProjects: (state) => state.stats?.totalProjects,
+    totalTasks: (state) => state.stats?.totalTasks,
+    statusCounts: (state) => state.stats?.statusCounts,
 
     chartData: (state) => {
       if (!state.stats || !state.stats.dailyStats) {
@@ -20,7 +20,7 @@ export const useDashboardStore = defineStore('dashboard', {
 
       const labels = state.stats.dailyStats.map(d => {
         const date = new Date(d.date)
-        return `${date.getMonth() + 1}/${date.getDate()}`
+        return `${date.getMonth() + 1}-${date.getDate()}`
       })
 
       return {

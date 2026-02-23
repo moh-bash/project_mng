@@ -22,7 +22,15 @@ export default {
     are_you_sure_you_want_to_delete_this_project: 'Are you sure you want to delete this project?',
     loading: 'Loading...',
     no_project_available: 'No project available',
-
+    dashboard: {
+        title: 'Project Insights',
+        subtitle: 'Real-time performance overview',
+        total_projects: 'Total Projects',
+        total_tasks: 'Total Tasks',
+        status_distribution: 'Status Distribution',
+        activity_timeline: 'Activity Timeline',
+        
+    },
 
 
     articles: {

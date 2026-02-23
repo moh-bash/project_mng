@@ -25,13 +25,13 @@
                                 >
                                 <template v-slot:activator="{ props: activatorProps }">
                                     <v-btn
-                                    class="text-none font-weight-regular my-0 pa-1 ma-0 rounded-xl mb-1 px-3 ign-center"
+                                    class="text-none font-weight-regular my-0 pa-1 ma-0 rounded-xl  px-4  ign-center"
                                     prepend-icon="mdi-plus-circle"
                                     text="create task"
                                     variant="tonal"
                                     v-bind="activatorProps"
-                                    size="x-small"
-                                    color="blue-darken-1"
+                                    size="small"
+                                    color="primary"
                                     ></v-btn>
                                 </template>
 
@@ -125,25 +125,6 @@
                             <!-- 11111111111111111 -->
 
 
-                        <v-chip color="primary" variant="flat" size="x-small">
-                            <v-icon class="me-1">mdi-sort-calendar-ascending</v-icon>
-                            <p>{{ currentProject.dueDate }}</p>
-                        </v-chip>
-
-                        <v-chip color="secondary" variant="flat" size="x-small">
-                            <v-icon class="me-1">mdi-security</v-icon>
-                            <p>{{ currentProject.role }}</p>
-                        </v-chip>
-
-                        <v-chip color="red" variant="flat" size="x-small">
-                            <v-icon class="me-1">mdi-account-group</v-icon>
-                            <p>{{ currentProject.assignedUsers.length }}</p>
-                        </v-chip>
-
-                        <v-chip color="green" variant="flat" size="x-small">
-                            <v-icon class="me-1">mdi-account-circle</v-icon>
-                            <p>{{ currentProject.creator.name }}</p>
-                        </v-chip>
 
                     </div>
                 </div>
