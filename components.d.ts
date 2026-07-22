@@ -12,16 +12,27 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     ActionMenu: typeof import('./src/components/project/ActionMenu.vue')['default']
+    AISection: typeof import('./src/components/home/AISection.vue')['default']
     CardInvitation: typeof import('./src/components/invitation/CardInvitation.vue')['default']
     CardProject: typeof import('./src/components/project/CardProject.vue')['default']
+    CTASection: typeof import('./src/components/home/CTASection.vue')['default']
     Dashboar: typeof import('./src/components/Dashboar.vue')['default']
     DashBoard: typeof import('./src/components/details/dashBoard.vue')['default']
     DetAils: typeof import('./src/components/details/detAils.vue')['default']
+    FAQSection: typeof import('./src/components/home/FAQSection.vue')['default']
+    FeaturesSection: typeof import('./src/components/home/FeaturesSection.vue')['default']
+    FooterSection: typeof import('./src/components/home/FooterSection.vue')['default']
     FormCreateProject: typeof import('./src/components/project/FormCreateProject.vue')['default']
+    HeroSection: typeof import('./src/components/home/HeroSection.vue')['default']
+    HowItWorksSection: typeof import('./src/components/home/HowItWorksSection.vue')['default']
     KanBan: typeof import('./src/components/details/kanBan.vue')['default']
     NavBar: typeof import('./src/components/NavBar.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    ShowcaseSection: typeof import('./src/components/home/ShowcaseSection.vue')['default']
+    StatisticsSection: typeof import('./src/components/home/StatisticsSection.vue')['default']
     TaskCard: typeof import('./src/components/details/TaskCard.vue')['default']
+    TestimonialsSection: typeof import('./src/components/home/TestimonialsSection.vue')['default']
+    TrustedSection: typeof import('./src/components/home/TrustedSection.vue')['default']
   }
 }

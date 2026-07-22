@@ -16,13 +16,19 @@ import Register from '@/pages/Register.vue'
 import projects from '@/pages/projects.vue'
 import ProjecDetails from '@/pages/ProjecDetails.vue'
 import Dash from '@/pages/dash.vue'
+import home from '@/pages/home.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes:[
     {
       path:'',
-      redirect:'/login'
+      redirect:'/home'
+    },
+    {
+      path:'/home',
+      name:'home',
+      component:home,
     },
     {
       path:'/pages',
