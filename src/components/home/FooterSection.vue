@@ -21,7 +21,7 @@
         <v-col cols="12" md="4" class="text-center text-md-end">
           <v-btn icon variant="text" class="mx-1 text-medium-emphasis"><v-icon>mdi-twitter</v-icon></v-btn>
           <v-btn icon variant="text" class="mx-1 text-medium-emphasis"><v-icon>mdi-linkedin</v-icon></v-btn>
-          <v-btn icon variant="text" class="mx-1 text-medium-emphasis" ><v-icon>mdi-github</v-icon></v-btn>
+          <v-btn icon variant="text" class="mx-1 text-medium-emphasis" :href="'https://github.com/moh-bash/project_mng'" ><v-icon>mdi-github</v-icon></v-btn>
         </v-col>
       </v-row>
       <v-divider class="my-6"></v-divider>
