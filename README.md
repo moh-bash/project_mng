@@ -65,16 +65,19 @@ This app lets you create, organize, and track tasks/projects with a modern front
 ## 🎯 Screenshots
 Include screenshots of:
 - Landing page
-   <div align="center">
-   <img style="width: 500px; height: auto; " src='./src/assets/Screenshot/Landing page.png'>
+  
+   <div align="center" style="pading: 5px">
+   <img style="width: 100%; height: auto; " src='./src/assets/Screenshot/Landing page.png'>
    </div>
 - Task creation UI
+  
    <div align="center">
-   <img style="width: 500px; height: auto; " src='./src/assets/Screenshot/Task.png'>
+   <img style="width: 100%; height: auto; " src='./src/assets/Screenshot/Task.png'>
    </div>
 - Completed tasks
+  
    <div align="center">
-   <img style="width: 500px; height: auto; " src='./src/assets/Screenshot/tasks det.png'>
+   <img style="width: 100%; height: auto; " src='./src/assets/Screenshot/tasks det.png'>
    </div>
 
 ---
