@@ -2,7 +2,8 @@
   <guest-layout>
         <h1 class="my-5">Register</h1>
         <v-alert v-if="authError" type="error">{{ authError }}</v-alert>
-        <v-form @submit.prevent="handleRegister">
+        
+        <v-form ref="form" @submit.prevent="handleRegister">
           <v-text-field 
             v-model="firstName" 
             label="First Name" 
@@ -28,13 +29,17 @@
           <v-btn 
             :loading="authLoading" 
             :disabled="authLoading" 
-            type="submit">Register</v-btn>
+            type="submit"
+            color="primary"
+            block
+            class="mt-4">{{ $t('register') }}</v-btn>
         </v-form>
   </guest-layout>
 </template>
+
 <script>
 import { useAuthStore } from '@/stores/auth';
-import { mapState , mapActions } from 'pinia';
+import { mapState, mapActions } from 'pinia';
 
 export default {
   name: 'RegisterPage',
@@ -47,56 +52,52 @@ export default {
       password: '',
       confirmPassword: '',
 
-      nameRules:[
-        v => !!v || 'required',
-        v => v.length > 3 || 'min 3 chars',
+      nameRules: [
+        v => !!v || 'Required',
+        v => (v && v.length >= 3) || 'Min 3 chars',
       ],
 
-      emailRules:[
-        v => !!v || 'required',
-        v => /.+@.+\..+/.test(v) || 'e-mail must be valid',
+      emailRules: [
+        v => !!v || 'Required',
+        v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
       ],
 
-      passwordRules:[
-        v => !!v || 'required',
-        v => v.length > 8 || 'min 8 chars',
-        v => /[A-Z]/.test(v) || 'A-Z',
-        v => /[a-z]/.test(v) || 'a-z',
-        v => /\d/.test(v) || '1-9'
+      passwordRules: [
+        v => !!v || 'Required',
+        v => (v && v.length >= 8) || 'Min 8 chars',
+        v => /[A-Z]/.test(v) || 'Must contain an uppercase letter',
+        v => /[a-z]/.test(v) || 'Must contain a lowercase letter',
+        v => /\d/.test(v) || 'Must contain a number'
       ],
 
-      confirmPasswordRules:[
-        v => !!v || 'required',
-        v => v === this.password || 'passwords must match',
+      confirmPasswordRules: [
+        v => !!v || 'Required',
+        v => v === this.password || 'Passwords must match',
       ],
     };
   },
 
-  computed:{
-    ...mapState(useAuthStore,['authError','authLoading','token'])
+  computed: {
+    ...mapState(useAuthStore, ['authError', 'authLoading', 'token'])
   },
 
-  methods:{
-        ...mapActions(useAuthStore,['register']),
-        async handleRegister(){
-          this.authError = null;
-          if(this.password !== this.confirmPassword){
-              this.authError = "Passwords do not match.";
-              return;
-          }
-          if(!this.firstName || !this.lastName || !this.email || !this.password || !this.confirmPassword){
-              this.authError = "All fields are required ";
-              return;
-          }
-          try {
-            await this.register(this.firstName, this.lastName, this.email, this.password);
-            if (this.token) {
-            this.$router.push('/auth/login');
-            }
-            } catch (error) {
-                console.error('Registration failed:', error);
-            }
+  methods: {
+    ...mapActions(useAuthStore, ['register']),
+
+    async handleRegister() {
+      const { valid } = await this.$refs.form.validate();
+      if (!valid) return;
+
+      try {
+        await this.register(this.firstName, this.lastName, this.email, this.password);
+        
+        if (this.token) {
+          this.$router.push('/projects'); 
         }
-    },
+      } catch (error) {
+        console.error('Registration failed:', error);
+      }
+    }
+  },
 };
 </script>
